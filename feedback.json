@@ -1,0 +1,52 @@
+[
+    {
+        "username": "testuser",
+        "timestamp": "2025-11-17 10:15:59",
+        "user_prompt": "What can you tell me about the offroad anti-lock ABS?",
+        "assistant_answer": "Answer: The offroad anti-lock ABS is designed to enhance safety and reduce braking distances on unpaved, soft terrains such as gravel, sand, mud, marsh, earth, or deep wet snow. It achieves this by temporarily disabling the brake pressure regulation behavior at low speeds (up to 40 km/h). When braking on loose surfaces, the wheels that lock up push the ground material in front of them, creating a braking wedge. This increases the braking effect and shortens the braking distance. The offroad ABS's terrain logic controls the braking effect based on the vehicle's speed. The speed limits are programmable, and the system can be activated or deactivated manually using a button. It is important to note that the use of offroad ABS is not allowed on public roads.",
+        "relevance_score": 2,
+        "relevance_notes": "test",
+        "hallucination_score": 5,
+        "hallucination_notes": "test"
+    },
+    {
+        "username": "testuser",
+        "timestamp": "2025-11-17 12:25:33",
+        "user_prompt": "What can you tell me about the offroad anti-lock ABS?",
+        "assistant_answer": "Answer: The offroad anti-lock ABS is designed to enhance safety on unpaved, soft terrain such as gravel, sand, mud, marsh, earth, or deep wet snow. It achieves this by selectively disabling the brake pressure regulation behavior at low speeds (up to 40 km/h). This allows the wheels to push the terrain material in front of them, creating a braking wedge that increases braking efficiency and reduces braking distance. The offroad ABS helps to shorten braking distances on unpaved, soft terrain. The offroad ABS's terrain logic controls the braking effect based on the vehicle's speed. The speed limits are programmable. Activation/deactivation is manual via a button. When the offroad ABS is activated, the electronic stability program ESP and the rollaway prevention MAN EasyStart are automatically deactivated if the vehicle is equipped with them.",
+        "correctness_score": 2,
+        "correctness_notes": "Test123",
+        "coverage_score": 4,
+        "coverage_notes": "test12341w9"
+    },
+    {
+        "username": "testuser",
+        "timestamp": "2025-11-17 12:26:03",
+        "user_prompt": "in terms of handling, how does it work?",
+        "assistant_answer": "Action: GlobalDataSource.search(query=\"in terms of handling, how does it work?\")",
+        "correctness_score": 4,
+        "correctness_notes": "testetesteste",
+        "coverage_score": 4,
+        "coverage_notes": "testtesttest1"
+    },
+    {
+        "username": "testuser",
+        "timestamp": "2025-11-17 12:26:41",
+        "user_prompt": "how does the light system works in MAN trucks?",
+        "assistant_answer": "Answer: The model cannot find sufficient information to answer the question about how the light system works in MAN trucks.",
+        "correctness_score": 1,
+        "correctness_notes": "",
+        "coverage_score": 1,
+        "coverage_notes": "test"
+    },
+    {
+        "username": "testuser",
+        "timestamp": "2025-11-17 12:29:10",
+        "user_prompt": "What can you tell me about the offroad anti-lock ABS?",
+        "assistant_answer": "Answer: The offroad anti-lock ABS is designed to enhance safety and reduce braking distances on unpaved, soft terrain such as gravel, sand, mud, marsh, earth, or deep wet snow. It achieves this by temporarily disabling the brake pressure regulation behavior at low speeds (up to 40 km/h). When braking, the wheels that lock up on loose surfaces (like gravel or rocks) push the underlying material in front of them, creating a braking wedge. This increases the braking effect and reduces the braking distance. The offroad ABS's terrain logic controls the braking effect based on the vehicle's speed, with programmable speed limits and manual activation/deactivation via a button. It is important to note that the use of offroad ABS is not allowed on public roads.",
+        "correctness_score": 4,
+        "correctness_notes": "Test 123",
+        "coverage_score": 5,
+        "coverage_notes": "Test 123456"
+    }
+]

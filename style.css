@@ -1,0 +1,100 @@
+/* --- GLOBAL --- */
+body {
+    background-color: #0e1117;
+    color: white;
+}
+
+.center {
+    text-align: center;
+}
+
+.accent {
+    color: #ff6600;
+}
+
+.muted {
+    color: gray;
+}
+
+/* --- LOGIN CARD --- */
+.login-card {
+    background-color: #1e1e1e;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+    text-align: center;
+    max-width: 400px;
+    margin: 100px auto;
+}
+
+/* --- BUTTONS --- */
+.stButton button {
+    width: 100%;
+    background-color: #ff6600 !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 8px;
+    white-space: normal !important;
+    padding: 10px 12px;
+}
+
+.stButton button:hover {
+    background-color: #ff8533 !important;
+    transition: 0.3s;
+}
+
+/* --- CHAT AREA --- */
+.chat-container {
+    background-color: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.2);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.chat-bubble {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 18px;
+    margin: 5px 0;
+    max-width: 80%;
+    word-wrap: break-word;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.assistant {
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    float: left;
+    clear: both;
+}
+
+.user {
+    background-color: #ff6600;
+    color: white;
+    float: right;
+    clear: both;
+}
+
+.clear {
+    clear: both;
+}
+
+.message-area {
+    height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* --- SIDEBAR LOGO --- */
+[data-testid="stSidebar"] img {
+    display: block;
+    margin: 0 auto;
+    margin-top: 60px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
+    opacity: 0.95;
+}
