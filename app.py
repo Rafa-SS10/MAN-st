@@ -110,7 +110,7 @@ if st.sidebar.button("Logout"):
     st.stop()
 
 # Sidebar Logo
-img_path = os.path.join(os.path.dirname(_file_), "logo.png")
+img_path = os.path.join(os.path.dirname(__file__), "logo.png")
 st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
 st.sidebar.image(img_path, use_container_width=True)
 
