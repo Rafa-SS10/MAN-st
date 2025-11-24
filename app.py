@@ -34,7 +34,7 @@ if "user" not in st.session_state:
 # ============================================
 # CAPTURE COGNITO CALLBACK (?code=)
 # ============================================
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 
 if "code" in query_params and not st.session_state.authenticated:
     code = query_params["code"][0]
@@ -55,6 +55,10 @@ for key, default in {
     "awaiting_feedback": False,
     "last_user_prompt": "",
     "last_assistant_answer": "",
+    "fb_correct": 0,
+    "fb_coverage": 0,
+    "fb_notes_correct": "",
+    "fb_notes_coverage": ""
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
@@ -106,9 +110,9 @@ if st.sidebar.button("Logout"):
     st.stop()
 
 # Sidebar Logo
-img_path = os.path.join(os.path.dirname(__file__), "logo.png")
+img_path = os.path.join(os.path.dirname(_file_), "logo.png")
 st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
-st.sidebar.image(img_path, use_column_width=True)
+st.sidebar.image(img_path, use_container_width=True)
 
 # ============================================
 # CHATBOT UI
@@ -166,19 +170,39 @@ if st.session_state.awaiting_feedback:
     col_left, col_right = st.columns([2, 1])
 
     with col_left:
-        st.markdown("Is the information correct?")
-        correctness = st.slider("Is the information correct?", 0, 5, key="fb_correct")
+        st.markdown("Is the information correct and useful?")
+        correctness = st.slider(
+            "Is the information correct?",
+            0, 5,
+            key="fb_correct",
+            value=st.session_state.fb_correct
+        )
         st.markdown("<div style='display:flex; justify-content:space-between; font-size:12px;'><span>Not correct</span><span>Correct</span></div>", unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
 
         st.markdown("Did the answer cover everything you wanted to know?")
-        coverage = st.slider("Did the answer cover everything you wanted to know?", 0, 5, key="fb_coverage")
+        coverage = st.slider(
+            "Did the answer cover everything you wanted to know?",
+            0, 5,
+            key="fb_coverage",
+            value=st.session_state.fb_coverage
+        )
         st.markdown("<div style='display:flex; justify-content:space-between; font-size:12px;'><span>No</span><span>Yes</span></div>", unsafe_allow_html=True)
 
     with col_right:
-        notes_correct = st.text_area("Additional notes", key="fb_notes_correct", height=70)
-        notes_coverage = st.text_area("Additional notes", key="fb_notes_coverage", height=70)
+        notes_correct = st.text_area(
+            "Write additional feedback here (e.g. what was incorrect?)",
+            key="fb_notes_correct",
+            value=st.session_state.fb_notes_correct,
+            height=70
+        )
+        notes_coverage = st.text_area(
+            "Write additional feedback here (e.g. what is missing?)",
+            key="fb_notes_coverage",
+            value=st.session_state.fb_notes_coverage,
+            height=70
+        )
 
         if st.button("Submit feedback"):
             entry = {
