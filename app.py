@@ -172,21 +172,33 @@ if st.session_state.awaiting_feedback:
     with col_left:
         st.markdown("Is the information correct and useful?")
         correctness = st.slider(
-            0, 5,
-            key="fb_correct",
-            value=st.session_state.fb_correct
+            label="",  # remove duplicated label
+            min_value=0,
+            max_value=5,
+            value=st.session_state.fb_correct,
+            key="fb_correct"
         )
-        st.markdown("<div style='display:flex; justify-content:space-between; font-size:12px;'><span>Not correct</span><span>Correct</span></div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='display:flex; justify-content:space-between; font-size:12px;'>"
+            "<span>Not correct</span><span>Correct</span></div>",
+            unsafe_allow_html=True
+        )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
         st.markdown("Did the answer cover everything you wanted to know?")
         coverage = st.slider(
-            0, 5,
-            key="fb_coverage",
-            value=st.session_state.fb_coverage
+            label="",  # remove duplicated label
+            min_value=0,
+            max_value=5,
+            value=st.session_state.fb_coverage,
+            key="fb_coverage"
         )
-        st.markdown("<div style='display:flex; justify-content:space-between; font-size:12px;'><span>No</span><span>Yes</span></div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='display:flex; justify-content:space-between; font-size:12px;'>"
+            "<span>No</span><span>Yes</span></div>",
+            unsafe_allow_html=True
+        )
 
     with col_right:
         notes_correct = st.text_area(
