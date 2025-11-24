@@ -9,7 +9,7 @@ class AuthConfig:
         self.sso_client_id_secret = "dev/sso/id"
         self.authorize_url = f"https://man-salesfunnel-leadseek-{self.env}-userpool-domain.auth.eu-west-1.amazoncognito.com/oauth2/authorize"
         self.token_url = f"https://man-salesfunnel-leadseek-{self.env}-userpool-domain.auth.eu-west-1.amazoncognito.com/oauth2/token"
-        self.callback_url = "https://3.253.133.16:8501"
+        self.callback_url = "https://sa-chatbot.salesfunnel-dev.rio.cloud"
 
     def get_client_secret(self, key: str) -> str:
         if key == "CLIENT_SECRET":
