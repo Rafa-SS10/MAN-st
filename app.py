@@ -172,7 +172,6 @@ if st.session_state.awaiting_feedback:
     with col_left:
         st.markdown("Is the information correct and useful?")
         correctness = st.slider(
-            "Is the information correct?",
             0, 5,
             key="fb_correct",
             value=st.session_state.fb_correct
@@ -183,7 +182,6 @@ if st.session_state.awaiting_feedback:
 
         st.markdown("Did the answer cover everything you wanted to know?")
         coverage = st.slider(
-            "Did the answer cover everything you wanted to know?",
             0, 5,
             key="fb_coverage",
             value=st.session_state.fb_coverage
