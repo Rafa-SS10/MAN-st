@@ -68,9 +68,11 @@ for key, default in {
     "last_user_prompt": "",
     "last_assistant_answer": "",
     "fb_correct": 0,
-    "fb_coverage": 0,
+    "fb_coverage": 0,    
+    "fb_relevance": 0,
     "fb_notes_correct": "",
-    "fb_notes_coverage": ""
+    "fb_notes_coverage": "",
+    "fb_notes_relevance": ""
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
@@ -94,24 +96,24 @@ def save_feedback(entry):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
 
-# ============================================
-# LOGIN PAGE (Hosted UI Login)
-# ============================================
-if not st.session_state.authenticated:
-    st.markdown("""
-        <div class="login-card">
-            <h2 class='accent'>	MAN Sales Argumentation Chatbot 🔐</h2>
-            <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
-        </div>
-    """, unsafe_allow_html=True)
+# # ============================================
+# # LOGIN PAGE (Hosted UI Login)
+# # ============================================
+# if not st.session_state.authenticated:
+#     st.markdown("""
+#         <div class="login-card">
+#             <h2 class='accent'>	MAN Sales Argumentation Chatbot 🔐</h2>
+#             <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
+#         </div>
+#     """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        if st.button("🔓 Anmeldung mit MAN SSO"):
-            auth.redirect_to_login()
+#     col1, col2, col3 = st.columns([1,2,1])
+#     with col2:
+#         if st.button("🔓 Anmeldung mit MAN SSO"):
+#             auth.redirect_to_login()
 
-    st.stop()
-# st.session_state.username="Jessi" #TODO
+#     st.stop()
+st.session_state.username="Jessi" #TODO
 # ============================================
 # SIDEBAR
 # ============================================
@@ -190,16 +192,17 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ============================================
 # FEEDBACK UI BELOW THE LAST ANSWER
 # ============================================
-# st.session_state.awaiting_feedback=True #TODO
+st.session_state.awaiting_feedback=True #TODO
+
 if st.session_state.awaiting_feedback:
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<h2 style='font-size:18px;'>Geben Sie uns Feedback</h2>", unsafe_allow_html=True)
 
     col_left, col_right = st.columns([1, 2])
 
     with col_left:
-        st.markdown("Sind die Informationen korrekt?")
+        st.markdown("Korrektheit:")
         correctness = st.slider(
-            label="",  # remove duplicated label
+            label="Sind die Informationen korrekt?",  # remove duplicated label
             min_value=0,
             max_value=5,
             value=st.session_state.fb_correct,
@@ -212,10 +215,10 @@ if st.session_state.awaiting_feedback:
         )
 
         st.markdown("<br>", unsafe_allow_html=True)
-
-        st.markdown("Deckt die Antwort alles ab, was gewünscht war?")
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("Vollständigkeit:")
         coverage = st.slider(
-            label="",  # remove duplicated label
+            label="Deckt die Antwort alles ab, was gewünscht war?",  # remove duplicated label
             min_value=0,
             max_value=5,
             value=st.session_state.fb_coverage,
@@ -227,13 +230,33 @@ if st.session_state.awaiting_feedback:
             unsafe_allow_html=True
         )
 
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("Relevanz:")
+        relevance = st.slider(
+            label="Sind die Informationen hilfreich für die Frage?",  # remove duplicated label
+            min_value=0,
+            max_value=5,
+            value=st.session_state.fb_relevance,
+            key="fb_relevance"
+        )
+        st.markdown(
+            "<div style='display:flex; justify-content:space-between; font-size:12px;'>"
+            "<span>Nicht hilfreich</span><span>Hilfreich</span></div>",
+            unsafe_allow_html=True
+        )
     with col_right:
+
+        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
+        
         notes_correct = st.text_area(
-            "Bitte geben Sie zusätzliches Feedback ein (z.B. Was war nicht korrekt?)",
+            "Bitte geben Sie zusätzliches Feedback ein (z.B. Was war nicht korrekt?).",
             key="fb_notes_correct",
             value=st.session_state.fb_notes_correct,
             height=70
         )
+        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
+        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
         notes_coverage = st.text_area(
             "Bitte geben Sie zusätzliches Feedback ein (z.B. Was hat gefehlt?).",
             key="fb_notes_coverage",
@@ -241,21 +264,34 @@ if st.session_state.awaiting_feedback:
             height=70
         )
 
-    if st.button("Feedback versenden"):
-        entry = {
-            "username": st.session_state.username,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "user_prompt": st.session_state.last_user_prompt,
-            "assistant_answer": st.session_state.last_assistant_answer,
-            "correctness_score": correctness,
-            "correctness_notes": notes_correct,
-            "coverage_score": coverage,
-            "coverage_notes": notes_coverage,
-        }
-        save_feedback(entry)
-        st.success("Ihr Feedback wurde erfolgreich versendet!")
-        st.session_state.awaiting_feedback = False
-        st.rerun()
+        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
+        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
+        notes_relevance = st.text_area(
+            "Bitte geben Sie zusätzliches Feedback ein (z.B. Warum war es nicht hilfreich?).",
+            key="fb_notes_relevance",
+            value=st.session_state.fb_notes_relevance,
+            height=70
+        )
+    col_left1, col_right1 = st.columns([2, 1])
+    with col_right1:
+        st.markdown("<div class='thin-button'>", unsafe_allow_html=True)
+        if st.button("Feedback versenden"):
+            entry = {
+                "username": st.session_state.username,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "user_prompt": st.session_state.last_user_prompt,
+                "assistant_answer": st.session_state.last_assistant_answer,
+                "correctness_score": correctness,
+                "correctness_notes": notes_correct,
+                "coverage_score": coverage,
+                "coverage_notes": notes_coverage,
+                "relevance_score": relevance,
+                "relevance_notes": notes_coverage,
+            }
+            save_feedback(entry)
+            st.success("Ihr Feedback wurde erfolgreich versendet!")
+            st.session_state.awaiting_feedback = False
+            st.rerun()
 
 # ============================================
 # SUGGESTED QUESTIONS

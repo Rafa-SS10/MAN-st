@@ -28,7 +28,7 @@ body {
     background-color: #1e1e1e;
     padding: 2.5rem;
     border-radius: 1rem;
-    box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+    box-shadow: 0 0 20px rgba(255,  0, 69, 0.3);
     text-align: center;
     max-width: 400px;
     margin: 100px auto;
@@ -55,7 +55,7 @@ body {
     background-color: #303C49;
     padding: 1.5rem;
     border-radius: 1rem;
-    box-shadow: 0 0 10px rgba(255, 102, 0, 0.2);
+    box-shadow: 0 0 10px rgba(255, 0, 69, 0.2);
     max-width: 800px;
     margin: 2rem auto;
 }
@@ -102,6 +102,26 @@ body {
     margin: 0 auto;
     margin-top: 60px;
     border-radius: 15px;
-    box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
+    box-shadow: 0 0 10px rgba(255, 0, 69, 0.4);
     opacity: 0.95;
+}
+
+
+.thin-button {
+    display: flex;
+    justify-content: right;
+    margin-top: 20px;
+}
+
+.thin-button button {
+    width: 100px !important; /* Adjust width */
+    background-color: #4B96D2 !important; /* Your theme color */
+    color: white !important;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.right-column {
+    margin-top: 40px; /* Adjust as needed */
 }
