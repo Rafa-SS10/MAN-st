@@ -5,6 +5,18 @@ import os
 import json
 from datetime import datetime
 
+import warnings
+warnings.filterwarnings("ignore")
+
+st.set_page_config(page_title="Sales Argumentation",  page_icon="logo.png", layout="wide")
+
+
+
+
+# st.set_option('deprecation.showfileUploaderEncoding', False)
+
+# st.set_option('deprecation.showPyplotGlobalUse', False)
+
 # Import Hosted UI Auth helper
 from auth_streamlit import Auth
 
@@ -103,19 +115,29 @@ if not st.session_state.authenticated:
 # ============================================
 # SIDEBAR
 # ============================================
+
+
+# Sidebar Logo
+img_path = os.path.join(os.path.dirname(__file__), "logo.png")
+# st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
+
+# Custom CSS to remove top padding
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {
+            padding-top: 0rem;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# st.sidebar.image(img_path, use_container_width=True) TODO
+st.sidebar.image(img_path)
+
 st.sidebar.write(f"👋 Angemeldet als {st.session_state.username}")
 
 if st.sidebar.button("Abmelden"):
     auth.logout()
     st.stop()
-
-# Sidebar Logo
-img_path = os.path.join(os.path.dirname(__file__), "logo.png")
-st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
-# st.sidebar.image(img_path, use_container_width=True) TODO
-st.sidebar.image(img_path)
-
-
 
 # ============================================
 # CHATBOT UI
@@ -168,10 +190,11 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ============================================
 # FEEDBACK UI BELOW THE LAST ANSWER
 # ============================================
+# st.session_state.awaiting_feedback=True #TODO
 if st.session_state.awaiting_feedback:
     st.markdown("<br>", unsafe_allow_html=True)
 
-    col_left, col_right = st.columns([2, 1])
+    col_left, col_right = st.columns([1, 2])
 
     with col_left:
         st.markdown("Sind die Informationen korrekt?")
@@ -218,21 +241,21 @@ if st.session_state.awaiting_feedback:
             height=70
         )
 
-        if st.button("Feedback versenden"):
-            entry = {
-                "username": st.session_state.username,
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "user_prompt": st.session_state.last_user_prompt,
-                "assistant_answer": st.session_state.last_assistant_answer,
-                "correctness_score": correctness,
-                "correctness_notes": notes_correct,
-                "coverage_score": coverage,
-                "coverage_notes": notes_coverage,
-            }
-            save_feedback(entry)
-            st.success("Ihr Feedback wurde erfolgreich versendet!")
-            st.session_state.awaiting_feedback = False
-            st.rerun()
+    if st.button("Feedback versenden"):
+        entry = {
+            "username": st.session_state.username,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "user_prompt": st.session_state.last_user_prompt,
+            "assistant_answer": st.session_state.last_assistant_answer,
+            "correctness_score": correctness,
+            "correctness_notes": notes_correct,
+            "coverage_score": coverage,
+            "coverage_notes": notes_coverage,
+        }
+        save_feedback(entry)
+        st.success("Ihr Feedback wurde erfolgreich versendet!")
+        st.session_state.awaiting_feedback = False
+        st.rerun()
 
 # ============================================
 # SUGGESTED QUESTIONS
