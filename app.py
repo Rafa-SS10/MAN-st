@@ -46,7 +46,7 @@ if "code" in query_params and not st.session_state.authenticated:
         st.session_state.authenticated = True
         st.session_state.username = user_info.get("email", "Unknown User")
     else:
-        st.error("Login failed.")
+        st.error("Anmeldung fehlgeschlagen.")
 
 # ============================================
 # FEEDBACK STATE
@@ -88,36 +88,39 @@ def save_feedback(entry):
 if not st.session_state.authenticated:
     st.markdown("""
         <div class="login-card">
-            <h2 class='accent'>MAN Sales Chatbot 🔐</h2>
-            <p class='muted'>Please log in to continue</p>
+            <h2 class='accent'>	MAN Sales Argumentation Chatbot 🔐</h2>
+            <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
         </div>
     """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
-        if st.button("🔓 Login with MAN SSO"):
+        if st.button("🔓 Anmeldung mit MAN SSO"):
             auth.redirect_to_login()
 
     st.stop()
-
+# st.session_state.username="Jessi" #TODO
 # ============================================
 # SIDEBAR
 # ============================================
-st.sidebar.write(f"👋 Logged in as {st.session_state.username}")
+st.sidebar.write(f"👋 Angemeldet als {st.session_state.username}")
 
-if st.sidebar.button("Logout"):
+if st.sidebar.button("Abmelden"):
     auth.logout()
     st.stop()
 
 # Sidebar Logo
 img_path = os.path.join(os.path.dirname(__file__), "logo.png")
 st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
-st.sidebar.image(img_path, use_container_width=True)
+# st.sidebar.image(img_path, use_container_width=True) TODO
+st.sidebar.image(img_path)
+
+
 
 # ============================================
 # CHATBOT UI
 # ============================================
-st.markdown("<h1 class='accent center'>💬 Sales Argumentation</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='accent center'>💬 MAN Sales Argumentation Chatbot</h1>", unsafe_allow_html=True)
 
 def query_api(prompt: str) -> str:
     url = "https://teqmr90em4.execute-api.eu-west-1.amazonaws.com/test/prompt"
@@ -144,8 +147,9 @@ if "messages" not in st.session_state:
 # Initial Assistant Message
 if not st.session_state.get("welcome_shown", False):
     welcome_text = (
-        "Hello there 👋! I'm your MAN Sales Assistant.\n\n"
-        "I can help you explore MAN vehicle features, performance specs, and sales arguments."
+        "Hallo! Ich bin Ihr MAN Sales-Assistent.\n\n"
+	    "Ich unterstütze Sie dabei, die Fahrzeugmerkmale und Verkaufsargumente von MAN einfach und übersichtlich zu entdecken."
+
     )
     st.session_state.messages.append({"role": "assistant", "content": welcome_text})
     st.session_state.welcome_shown = True
@@ -170,7 +174,7 @@ if st.session_state.awaiting_feedback:
     col_left, col_right = st.columns([2, 1])
 
     with col_left:
-        st.markdown("Is the information correct and useful?")
+        st.markdown("Sind die Informationen korrekt?")
         correctness = st.slider(
             label="",  # remove duplicated label
             min_value=0,
@@ -180,13 +184,13 @@ if st.session_state.awaiting_feedback:
         )
         st.markdown(
             "<div style='display:flex; justify-content:space-between; font-size:12px;'>"
-            "<span>Not correct</span><span>Correct</span></div>",
+            "<span>Nicht korrekt</span><span>Korrekt</span></div>",
             unsafe_allow_html=True
         )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        st.markdown("Did the answer cover everything you wanted to know?")
+        st.markdown("Deckt die Antwort alles ab, was gewünscht war?")
         coverage = st.slider(
             label="",  # remove duplicated label
             min_value=0,
@@ -196,25 +200,25 @@ if st.session_state.awaiting_feedback:
         )
         st.markdown(
             "<div style='display:flex; justify-content:space-between; font-size:12px;'>"
-            "<span>No</span><span>Yes</span></div>",
+            "<span>Nicht vollständig</span><span>Vollständig</span></div>",
             unsafe_allow_html=True
         )
 
     with col_right:
         notes_correct = st.text_area(
-            "Write additional feedback here (e.g. what was incorrect?)",
+            "Bitte geben Sie zusätzliches Feedback ein (z.B. Was war nicht korrekt?)",
             key="fb_notes_correct",
             value=st.session_state.fb_notes_correct,
             height=70
         )
         notes_coverage = st.text_area(
-            "Write additional feedback here (e.g. what is missing?)",
+            "Bitte geben Sie zusätzliches Feedback ein (z.B. Was hat gefehlt?).",
             key="fb_notes_coverage",
             value=st.session_state.fb_notes_coverage,
             height=70
         )
 
-        if st.button("Submit feedback"):
+        if st.button("Feedback versenden"):
             entry = {
                 "username": st.session_state.username,
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -226,7 +230,7 @@ if st.session_state.awaiting_feedback:
                 "coverage_notes": notes_coverage,
             }
             save_feedback(entry)
-            st.success("Thank you for your feedback!")
+            st.success("Ihr Feedback wurde erfolgreich versendet!")
             st.session_state.awaiting_feedback = False
             st.rerun()
 
@@ -234,12 +238,12 @@ if st.session_state.awaiting_feedback:
 # SUGGESTED QUESTIONS
 # ============================================
 if st.session_state.get("show_suggestions", False):
-    st.markdown("<p class='muted center'>Try asking:</p>", unsafe_allow_html=True)
+    st.markdown("<p class='muted center'>Prompt-Vorschläge:</p>", unsafe_allow_html=True)
 
     suggestions = [
-        "What can you tell me about the offroad anti-lock ABS?",
-        "How does MAN's fuel efficiency compare to competitors?",
-        "What are the key safety features of the TGX model?"
+     "Was können Sie mir über das Offroad-Antiblockiersystem ABS sagen?",
+    "Wie schneidet MAN im Vergleich zu Wettbewerbern in Sachen Kraftstoffeffizienz ab?",
+    "Was sind die wichtigsten Sicherheitsmerkmale des TGX-Modells?"
     ]
 
     cols = st.columns(len(suggestions))
@@ -248,7 +252,7 @@ if st.session_state.get("show_suggestions", False):
         with cols[i]:
             if st.button(q, key=f"sugg{i}"):
                 st.session_state.messages.append({"role": "user", "content": q})
-                with st.spinner("Thinking..."):
+                with st.spinner("Die Antwort wird generiert..."):
                     answer = query_api(q)
                 st.session_state.messages.append({"role": "assistant", "content": answer})
 
@@ -261,10 +265,10 @@ if st.session_state.get("show_suggestions", False):
 # ============================================
 # USER CHAT INPUT
 # ============================================
-if prompt := st.chat_input("Type your message here..."):
+if prompt := st.chat_input("Geben Sie Ihre Nachricht hier ein."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    with st.spinner("Thinking..."):
+    with st.spinner("Die Antwort wird generiert..."):
         answer = query_api(prompt)
 
     st.session_state.messages.append({"role": "assistant", "content": answer})
