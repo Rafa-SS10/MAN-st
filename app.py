@@ -96,24 +96,24 @@ def save_feedback(entry):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
 
-# # ============================================
-# # LOGIN PAGE (Hosted UI Login)
-# # ============================================
-# if not st.session_state.authenticated:
-#     st.markdown("""
-#         <div class="login-card">
-#             <h2 class='accent'>	MAN Sales Argumentation Chatbot 🔐</h2>
-#             <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
-#         </div>
-#     """, unsafe_allow_html=True)
+# ============================================
+# LOGIN PAGE (Hosted UI Login)
+# ============================================
+if not st.session_state.authenticated:
+    st.markdown("""
+        <div class="login-card">
+            <h2 class='accent'>	MAN Sales Argumentation Chatbot 🔐</h2>
+            <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
+        </div>
+    """, unsafe_allow_html=True)
 
-#     col1, col2, col3 = st.columns([1,2,1])
-#     with col2:
-#         if st.button("🔓 Anmeldung mit MAN SSO"):
-#             auth.redirect_to_login()
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        if st.button("🔓 Anmeldung mit MAN SSO"):
+            auth.redirect_to_login()
 
-#     st.stop()
-st.session_state.username="Jessi" #TODO
+    st.stop()
+# st.session_state.username="Jessi" #TODO
 # ============================================
 # SIDEBAR
 # ============================================
@@ -125,11 +125,18 @@ img_path = os.path.join(os.path.dirname(__file__), "logo.png")
 
 # Custom CSS to remove top padding
 st.markdown("""
+
     <style>
         [data-testid="stSidebar"] {
             padding-top: 0rem;
         }
+
+        /* Remove shadow from sidebar image */
+        [data-testid="stSidebar"] img {
+            box-shadow: none !important;
+        }
     </style>
+
 """, unsafe_allow_html=True)
 
 # st.sidebar.image(img_path, use_container_width=True) TODO
@@ -192,7 +199,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ============================================
 # FEEDBACK UI BELOW THE LAST ANSWER
 # ============================================
-st.session_state.awaiting_feedback=True #TODO
+# st.session_state.awaiting_feedback=True #TODO
 
 if st.session_state.awaiting_feedback:
     st.markdown("<h2 style='font-size:18px;'>Geben Sie uns Feedback</h2>", unsafe_allow_html=True)
@@ -201,6 +208,42 @@ if st.session_state.awaiting_feedback:
 
     with col_left:
         st.markdown("Korrektheit:")
+        
+
+        
+
+        st.markdown(f"""
+            <style>
+            /* Tick marks (min/max and intermediate) */
+            div.stSlider > div[data-baseweb="slider"] > div[data-testid="stTickBar"] > div {{
+                background: #E40045;
+            }}
+
+            /* Slider thumb */
+            div.stSlider > div[data-baseweb="slider"] > div > div > div[role="slider"] {{
+                background-color: #E40045;
+                box-shadow: rgba(228, 0, 69, 0.2) 0px 0px 0px 0.2rem;
+            }}
+
+            /* Slider value above thumb */
+            div.stSlider > div[data-baseweb="slider"] > div > div > div > div {{
+                color: #FFFFFF;
+                font-weight: bold;
+            }}
+
+            /* Slider track gradient (active/inactive) */
+            div.stSlider > div[data-baseweb="slider"] > div > div {{
+                background: linear-gradient(to right,
+                    #E40045 0%,
+                    #E40045 {5 * 20}%,
+                    rgba(228, 0, 69, 0.25) {5 * 20}%,
+                    rgba(228, 0, 69, 0.25) 100%);
+            }}
+            </style>
+        """, unsafe_allow_html=True)
+
+
+
         correctness = st.slider(
             label="Sind die Informationen korrekt?",  # remove duplicated label
             min_value=0,
