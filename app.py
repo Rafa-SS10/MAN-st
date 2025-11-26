@@ -4,13 +4,12 @@ import time
 import os
 import json
 from datetime import datetime
+from feedback_storage import save_feedback
 
 import warnings
 warnings.filterwarnings("ignore")
 
 st.set_page_config(page_title="Sales Argumentation",  page_icon="logo.png", layout="wide")
-
-
 
 
 # st.set_option('deprecation.showfileUploaderEncoding', False)
@@ -76,25 +75,6 @@ for key, default in {
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
-
-# ============================================
-# SAVE FEEDBACK
-# ============================================
-def save_feedback(entry):
-    file_path = "feedback.json"
-    data = []
-
-    if os.path.exists(file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
-            try:
-                data = json.load(f)
-            except:
-                data = []
-
-    data.append(entry)
-
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4)
 
 # ============================================
 # LOGIN PAGE (Hosted UI Login)
