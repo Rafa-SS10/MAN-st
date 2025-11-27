@@ -29,10 +29,18 @@ class Auth:
             f"&scope=openid+email+profile"
         )
         st.query_params={}
-        st.markdown(
+        '''st.markdown(
             f"<meta http-equiv='refresh' content='0; url={login_url}'>",
             unsafe_allow_html=True
-        )
+        )'''
+        st.markdown(
+            f"""
+            <script>
+            window.location.href = "{login_url}";
+            </script>
+            """,
+            unsafe_allow_html=True
+        ) 
 
     # Callback handler: exchange code for JWT tokens
     def handle_callback(self, code):
