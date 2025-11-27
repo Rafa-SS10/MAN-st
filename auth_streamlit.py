@@ -32,7 +32,6 @@ class Auth:
             f"&redirect_uri={urllib.parse.quote(self.redirect_uri)}"
             f"&scope=openid+email+profile"
         )
-        st.experimental_set_query_params()
         st.markdown(
             f"<meta http-equiv='refresh' content='0; url={login_url}'>",
             unsafe_allow_html=True
@@ -79,7 +78,7 @@ class Auth:
             f"?client_id={self.client_id}"
             f"&post_logout_redirect_uri={urllib.parse.quote(self.redirect_uri)}"
         )
-        st.experimental_set_query_params()
+        st.query_params = {}
         st.markdown(
             f"<meta http-equiv='refresh' content='0; url={url}'>",
             unsafe_allow_html=True
