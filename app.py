@@ -45,13 +45,12 @@ if "user" not in st.session_state:
 # ============================================
 # CAPTURE COGNITO CALLBACK (?code=)
 # ============================================
-query_params = st.query_params
-
-
+query_params = st.experimental_get_query_params()
+print("Query Params:", query_params)
 if "code" in query_params and not st.session_state.authenticated:
-    code = query_params["code"]
+    code = query_params["code"][0]
+
     user_info = auth.handle_callback(code)
-    print("User info:", user_info)
 
     if user_info:
         st.session_state.user = user_info
