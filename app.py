@@ -7,7 +7,7 @@ from datetime import datetime
 from feedback_storage import save_feedback
 
 import warnings
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 st.set_page_config(page_title="Sales Argumentation",  page_icon="logo.png", layout="wide")
 
@@ -45,7 +45,7 @@ if "user" not in st.session_state:
 # ============================================
 # CAPTURE COGNITO CALLBACK (?code=)
 # ============================================
-query_params = st.query_params
+query_params = st.experimental_get_query_params()
 print("Query Params:", query_params)
 if "code" in query_params and not st.session_state.authenticated:
     code = query_params["code"][0]
