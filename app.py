@@ -45,7 +45,7 @@ if "user" not in st.session_state:
 # ============================================
 # CAPTURE COGNITO CALLBACK (?code=)
 # ============================================
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 print("Query Params:", query_params)
 if "code" in query_params and not st.session_state.authenticated:
     code = query_params["code"][0]
@@ -79,20 +79,25 @@ for key, default in {
 # ============================================
 # LOGIN PAGE (Hosted UI Login)
 # ============================================
-if not st.session_state.authenticated:
-    st.markdown("""
-        <div class="login-card">
-            <h2 class='accent'>	MAN Sales Argumentation Chatbot 🔐</h2>
-            <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
-        </div>
-    """, unsafe_allow_html=True)
+if not st.session_state.get("authenticated", False):
+  st.markdown("""
+    <div class="login-card">
+      <h2 class='accent'> MAN Sales Argumentation Chatbot :closed_lock_with_key:</h2>
+      <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
+    </div>
+  """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        if st.button("🔓 Anmeldung mit MAN SSO"):
-            auth.redirect_to_login()
+  col1, col2, col3 = st.columns([1,2,1])
+  with col2:
+    if st.button(":unlock: Anmeldung mit MAN SSO"):
+      # Define flag de redirect
+      st.session_state.redirect = True
 
-    st.stop()
+  # Se a flag está ativa, faz o redirecionamento via JS
+  if st.session_state.redirect:
+    auth.redirect_to_login() # components.html dentro desta função
+
+  st.stop()
 # st.session_state.username="Jessi" #TODO
 # ============================================
 # SIDEBAR
