@@ -28,19 +28,10 @@ class Auth:
             f"&redirect_uri={urllib.parse.quote(self.redirect_uri)}"
             f"&scope=openid+email+profile"
         )
-        st.query_params={}
-        '''st.markdown(
+        st.markdown(
             f"<meta http-equiv='refresh' content='0; url={login_url}'>",
             unsafe_allow_html=True
-        )'''
-        st.markdown(
-            f"""
-            <script>
-            window.location.href = "{login_url}";
-            </script>
-            """,
-            unsafe_allow_html=True
-        ) 
+        )
 
     # Callback handler: exchange code for JWT tokens
     def handle_callback(self, code):
@@ -83,7 +74,6 @@ class Auth:
             f"?client_id={self.client_id}"
             f"&post_logout_redirect_uri={urllib.parse.quote(self.redirect_uri)}"
         )
-        st.query_params={}
         st.markdown(
             f"<meta http-equiv='refresh' content='0; url={url}'>",
             unsafe_allow_html=True
