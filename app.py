@@ -51,6 +51,7 @@ query_params = st.query_params
 if "code" in query_params and not st.session_state.authenticated:
     code = query_params["code"]
     user_info = auth.handle_callback(code)
+    print("User info:", user_info)
 
     if user_info:
         st.session_state.user = user_info
