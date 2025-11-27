@@ -42,6 +42,8 @@ if "authenticated" not in st.session_state:
 if "user" not in st.session_state:
     st.session_state.user = None
 
+if "redirect" not in st.session_state:
+    st.session_state.redirect = False
 # ============================================
 # CAPTURE COGNITO CALLBACK (?code=)
 # ============================================
@@ -82,14 +84,14 @@ for key, default in {
 if not st.session_state.get("authenticated", False):
   st.markdown("""
     <div class="login-card">
-      <h2 class='accent'> MAN Sales Argumentation Chatbot :closed_lock_with_key:</h2>
+      <h2 class='accent'> MAN Sales Argumentation Chatbot 🔐</h2>
       <p class='muted'> Bitte melden Sie sich an, um fortzufahren. </p>
     </div>
   """, unsafe_allow_html=True)
 
   col1, col2, col3 = st.columns([1,2,1])
   with col2:
-    if st.button(":unlock: Anmeldung mit MAN SSO"):
+    if st.button("🔓 Anmeldung mit MAN SSO"):
       # Define flag de redirect
       st.session_state.redirect = True
 
