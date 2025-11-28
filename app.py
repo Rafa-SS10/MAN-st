@@ -134,7 +134,7 @@ if st.sidebar.button("Abmelden"):
 st.markdown("<h1 class='accent center'>💬 MAN Sales Argumentation Chatbot</h1>", unsafe_allow_html=True)
 
 def query_api(prompt: str) -> str:
-    url = "https://teqmr90em4.execute-api.eu-west-1.amazonaws.com/test/prompt"
+    url = "https://an4zcmir30.execute-api.eu-west-1.amazonaws.com/dev/v1"
     payload = {"prompt": prompt}
     headers = {
         "Content-Type": "application/json",
@@ -142,7 +142,7 @@ def query_api(prompt: str) -> str:
     }
 
     try:
-        response = requests.get(url, json=payload, headers=headers, timeout=10)
+        response = requests.post(url, json=payload, headers=headers, timeout=10)
         response.raise_for_status()
         return response.json().get("body", "No response from API.")
     except Exception as e:
