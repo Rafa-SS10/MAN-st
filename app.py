@@ -5,6 +5,7 @@ import os
 import json
 from datetime import datetime
 from feedback_storage import save_feedback
+from conversation_storage import save_conversation
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -324,9 +325,9 @@ if st.session_state.get("show_suggestions", False):
     st.markdown("<p class='muted center'>Prompt-Vorschläge:</p>", unsafe_allow_html=True)
 
     suggestions = [
-     "Was können Sie mir über das Offroad-Antiblockiersystem ABS sagen?",
-    "Wie schneidet MAN im Vergleich zu Wettbewerbern in Sachen Kraftstoffeffizienz ab?",
-    "Was sind die wichtigsten Sicherheitsmerkmale des TGX-Modells?"
+        "Was können Sie mir über das Offroad-Antiblockiersystem ABS sagen?",
+        "Wie schneidet MAN im Vergleich zu Wettbewerbern in Sachen Kraftstoffeffizienz ab?",
+        "Was sind die wichtigsten Sicherheitsmerkmale des TGX-Modells?"
     ]
 
     cols = st.columns(len(suggestions))
@@ -334,33 +335,70 @@ if st.session_state.get("show_suggestions", False):
     for i, q in enumerate(suggestions):
         with cols[i]:
             if st.button(q, key=f"sugg{i}"):
+                # Add user message
                 st.session_state.messages.append({"role": "user", "content": q})
+
+                # Get assistant response
                 with st.spinner("Die Antwort wird generiert..."):
                     answer = query_api(q)
+
+                # Add assistant message
                 st.session_state.messages.append({"role": "assistant", "content": answer})
 
+                # Update session state
                 st.session_state.last_user_prompt = q
                 st.session_state.last_assistant_answer = answer
                 st.session_state.awaiting_feedback = True
                 st.session_state.show_suggestions = False
+
+                # ✅ Save conversation to S3
+                from conversation_storage import save_conversation
+                from datetime import datetime
+
+                conversation_entry = {
+                    "username": st.session_state.username,
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "question": q,
+                    "answer": answer
+                }
+                save_conversation(conversation_entry)
+
+                # Refresh UI
                 st.rerun()
 
 # ============================================
 # USER CHAT INPUT
 # ============================================
 if prompt := st.chat_input("Geben Sie Ihre Nachricht hier ein."):
+    # Add user message
     st.session_state.messages.append({"role": "user", "content": prompt})
 
+    # Get assistant response
     with st.spinner("Die Antwort wird generiert..."):
         answer = query_api(prompt)
 
+    # Add assistant message
     st.session_state.messages.append({"role": "assistant", "content": answer})
 
+    # Update session state
     st.session_state.last_user_prompt = prompt
     st.session_state.last_assistant_answer = answer
     st.session_state.awaiting_feedback = True
     st.session_state.show_suggestions = False
 
+    # ✅ Save conversation to S3
+    from conversation_storage import save_conversation
+    from datetime import datetime
+
+    conversation_entry = {
+        "username": st.session_state.username,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "question": prompt,
+        "answer": answer
+    }
+    save_conversation(conversation_entry)
+
+    # Refresh UI
     st.rerun()
 
 st.markdown("</div>", unsafe_allow_html=True)
