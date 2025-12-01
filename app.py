@@ -38,11 +38,13 @@ def load_css(file_name):
 
 load_css("style.css")
 
-# st.session_state.authenticated = True # TODO
-# st.session_state.username="Testuser" # TODO
-# st.session_state.user_id = hashlib.sha256(st.session_state.username.encode()).hexdigest()[:8]  # TODO
-# if "session_id" not in st.session_state:
-#     st.session_state.session_id = str(uuid.uuid4())  # Generate a unique ID # TODO
+st.session_state.authenticated = True # TODO
+st.session_state.username="Testuser" # TODO
+st.session_state.user_id = hashlib.sha256(st.session_state.username.encode()).hexdigest()[:8]  # TODO
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())  # Generate a unique ID # TODO
+st.session_state.awaiting_feedback= True # TODO
+    
 # ============================================
 # AUTHENTICATION STATE
 # ============================================
@@ -204,35 +206,6 @@ if st.session_state.awaiting_feedback:
 
         
 
-        st.markdown(f"""
-            <style>
-            /* Tick marks (min/max and intermediate) */
-            div.stSlider > div[data-baseweb="slider"] > div[data-testid="stTickBar"] > div {{
-                background: #E40045;
-            }}
-
-            /* Slider thumb */
-            div.stSlider > div[data-baseweb="slider"] > div > div > div[role="slider"] {{
-                background-color: #E40045;
-                box-shadow: rgba(228, 0, 69, 0.2) 0px 0px 0px 0.2rem;
-            }}
-
-            /* Slider value above thumb */
-            div.stSlider > div[data-baseweb="slider"] > div > div > div > div {{
-                color: #FFFFFF;
-                font-weight: bold;
-            }}
-
-            /* Slider track gradient (active/inactive) */
-            div.stSlider > div[data-baseweb="slider"] > div > div {{
-                background: linear-gradient(to right,
-                    #E40045 0%,
-                    #E40045 {5 * 20}%,
-                    rgba(228, 0, 69, 0.25) {5 * 20}%,
-                    rgba(228, 0, 69, 0.25) 100%);
-            }}
-            </style>
-        """, unsafe_allow_html=True)
 
 
 
