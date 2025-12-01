@@ -7,6 +7,10 @@ from datetime import datetime
 from feedback_storage import save_feedback
 from conversation_storage import save_conversation
 
+import hashlib
+import uuid
+
+
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -34,6 +38,11 @@ def load_css(file_name):
 
 load_css("style.css")
 
+# st.session_state.authenticated = True # TODO
+# st.session_state.username="Testuser" # TODO
+# st.session_state.user_id = hashlib.sha256(st.session_state.username.encode()).hexdigest()[:8]  # TODO
+# if "session_id" not in st.session_state:
+#     st.session_state.session_id = str(uuid.uuid4())  # Generate a unique ID # TODO
 # ============================================
 # AUTHENTICATION STATE
 # ============================================
@@ -57,6 +66,11 @@ if "code" in query_params and not st.session_state.authenticated:
         st.session_state.user = user_info
         st.session_state.authenticated = True
         st.session_state.username = user_info.get("email", "Unknown User")
+        st.session_state.user_id = hashlib.sha256(st.session_state.username.encode()).hexdigest()[:8]  # 8-char ID
+        if "session_id" not in st.session_state:
+            st.session_state.session_id = str(uuid.uuid4())  # Generate a unique ID
+
+        
     else:
         st.error("Anmeldung fehlgeschlagen.")
 
@@ -94,7 +108,6 @@ if not st.session_state.authenticated:
             auth.redirect_to_login()
 
     st.stop()
-# st.session_state.username="Jessi" #TODO
 # ============================================
 # SIDEBAR
 # ============================================
@@ -120,7 +133,6 @@ st.markdown("""
 
 """, unsafe_allow_html=True)
 
-# st.sidebar.image(img_path, use_container_width=True) TODO
 st.sidebar.image(img_path)
 
 st.sidebar.write(f"👋 Angemeldet als {st.session_state.username}")
@@ -151,7 +163,7 @@ def query_api(prompt: str) -> str:
         return "Error contacting API."
 
 # Chat Container
-st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+# st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -180,7 +192,6 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ============================================
 # FEEDBACK UI BELOW THE LAST ANSWER
 # ============================================
-# st.session_state.awaiting_feedback=True #TODO
 
 if st.session_state.awaiting_feedback:
     st.markdown("<h2 style='font-size:18px;'>Geben Sie uns Feedback</h2>", unsafe_allow_html=True)
@@ -302,6 +313,8 @@ if st.session_state.awaiting_feedback:
         if st.button("Feedback versenden"):
             entry = {
                 "username": st.session_state.username,
+                "userId": st.session_state.user_id,
+                "sessionId": st.session_state.session_id,
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "user_prompt": st.session_state.last_user_prompt,
                 "assistant_answer": st.session_state.last_assistant_answer,
@@ -322,7 +335,7 @@ if st.session_state.awaiting_feedback:
 # SUGGESTED QUESTIONS
 # ============================================
 if st.session_state.get("show_suggestions", False):
-    st.markdown("<p class='muted center'>Prompt-Vorschläge:</p>", unsafe_allow_html=True)
+    st.markdown("Prompt-Vorschläge:", unsafe_allow_html=True)
 
     suggestions = [
         "Was können Sie mir über das Offroad-Antiblockiersystem ABS sagen?",
@@ -357,6 +370,8 @@ if st.session_state.get("show_suggestions", False):
 
                 conversation_entry = {
                     "username": st.session_state.username,
+                    "userId": st.session_state.user_id,
+                    "sessionId": st.session_state.session_id,
                     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "question": q,
                     "answer": answer
@@ -392,6 +407,8 @@ if prompt := st.chat_input("Geben Sie Ihre Nachricht hier ein."):
 
     conversation_entry = {
         "username": st.session_state.username,
+        "userId": st.session_state.user_id,
+        "sessionId": st.session_state.session_id,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "question": prompt,
         "answer": answer
