@@ -38,7 +38,7 @@ def save_feedback(entry):
     s3.put_object(
         Bucket=BUCKET_NAME,
         Key=OBJECT_KEY,
-        Body=json.dumps(data, indent=4),
+        Body=json.dumps(data, indent=4, ensure_ascii=False),
         ContentType="application/json"
     )
 
