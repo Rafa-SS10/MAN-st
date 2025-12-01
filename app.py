@@ -38,12 +38,12 @@ def load_css(file_name):
 
 load_css("style.css")
 
-st.session_state.authenticated = True # TODO
-st.session_state.username="Testuser" # TODO
-st.session_state.user_id = hashlib.sha256(st.session_state.username.encode()).hexdigest()[:8]  # TODO
-if "session_id" not in st.session_state:
-    st.session_state.session_id = str(uuid.uuid4())  # Generate a unique ID # TODO
-st.session_state.awaiting_feedback= True # TODO
+# st.session_state.authenticated = True # TODO
+# st.session_state.username="Testuser" # TODO
+# st.session_state.user_id = hashlib.sha256(st.session_state.username.encode()).hexdigest()[:8]  # TODO
+# if "session_id" not in st.session_state:
+#     st.session_state.session_id = str(uuid.uuid4())  # Generate a unique ID # TODO
+# st.session_state.awaiting_feedback= True # TODO
     
 # ============================================
 # AUTHENTICATION STATE
