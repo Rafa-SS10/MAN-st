@@ -10,12 +10,20 @@ from conversation_storage import save_conversation
 import hashlib
 import uuid
 
+import os
+os.environ["STREAMLIT_SUPPRESS_DEPRECATION_WARNINGS"] = "true"
+
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
+st._show_deprecation_warning = lambda *args, **kwargs: None
 st.set_page_config(page_title="Sales Argumentation",  page_icon="logo.png", layout="wide")
 
+
+warnings.filterwarnings(
+    "ignore",
+    message="Please replace st.experimental_get_query_params with st.query_params"
+)
 
 # st.set_option('deprecation.showfileUploaderEncoding', False)
 
@@ -58,7 +66,7 @@ if "user" not in st.session_state:
 # CAPTURE COGNITO CALLBACK (?code=)
 # ============================================
 query_params = st.experimental_get_query_params()
-print("Query Params:", query_params)
+
 if "code" in query_params and not st.session_state.authenticated:
     code = query_params["code"][0]
 
@@ -88,7 +96,8 @@ for key, default in {
     "fb_relevance": 0,
     "fb_notes_correct": "",
     "fb_notes_coverage": "",
-    "fb_notes_relevance": ""
+    "fb_notes_relevance": "",
+    "history": []
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
@@ -115,33 +124,78 @@ if not st.session_state.authenticated:
 # ============================================
 
 
-# Sidebar Logo
+# Logo-Pfad
 img_path = os.path.join(os.path.dirname(__file__), "logo.png")
-# st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
 
-# Custom CSS to remove top padding
+# CSS für Sidebar-Layout
 st.markdown("""
-
     <style>
+        /* Entfernt Standard-Padding oben */
         [data-testid="stSidebar"] {
             padding-top: 0rem;
         }
 
-        /* Remove shadow from sidebar image */
+        /* Logo ohne Schatten */
         [data-testid="stSidebar"] img {
             box-shadow: none !important;
         }
-    </style>
 
+        /* Sidebar als Flexbox für dynamische Anordnung */
+        [data-testid="stSidebar"] > div:first-child {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Alles oben */
+            height: 100vh;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
+# Logo ganz oben
 st.sidebar.image(img_path)
 
+# Benutzerinfo direkt unter dem Logo
 st.sidebar.write(f"👋 Angemeldet als {st.session_state.username}")
 
+
+# Logout
 if st.sidebar.button("Abmelden"):
     auth.logout()
     st.stop()
+
+st.sidebar.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] > div:first-child {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+        .sidebar-footer {
+            text-align: left;
+            font-size: 13px;
+            padding: 10px 0;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+
+# Footer-Hinweis unten
+st.sidebar.markdown(
+    """
+    <div class="sidebar-footer">
+        KI-generierte Inhalte können fehlerhaft sein.<br>
+        Bitte überprüfen Sie wichtige Informationen.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+
 
 # ============================================
 # CHATBOT UI
@@ -182,6 +236,7 @@ if not st.session_state.get("welcome_shown", False):
     st.session_state.show_suggestions = True
 
 # Display Messages
+
 st.markdown("<div class='message-area'>", unsafe_allow_html=True)
 for message in st.session_state.messages:
     role_class = "user" if message["role"] == "user" else "assistant"
@@ -336,6 +391,7 @@ if st.session_state.get("show_suggestions", False):
                 st.session_state.last_assistant_answer = answer
                 st.session_state.awaiting_feedback = True
                 st.session_state.show_suggestions = False
+                st.session_state.history.append((q, answer))
 
                 # ✅ Save conversation to S3
                 from conversation_storage import save_conversation
@@ -350,6 +406,7 @@ if st.session_state.get("show_suggestions", False):
                     "answer": answer
                 }
                 save_conversation(conversation_entry)
+                
 
                 # Refresh UI
                 st.rerun()
@@ -373,6 +430,8 @@ if prompt := st.chat_input("Geben Sie Ihre Nachricht hier ein."):
     st.session_state.last_assistant_answer = answer
     st.session_state.awaiting_feedback = True
     st.session_state.show_suggestions = False
+    st.session_state.history.append((prompt, answer))
+
 
     # ✅ Save conversation to S3
     from conversation_storage import save_conversation
@@ -387,6 +446,7 @@ if prompt := st.chat_input("Geben Sie Ihre Nachricht hier ein."):
         "answer": answer
     }
     save_conversation(conversation_entry)
+    
 
     # Refresh UI
     st.rerun()
