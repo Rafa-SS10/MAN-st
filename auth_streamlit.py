@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 class Auth:
     def __init__(self):
         self.setts = AuthConfig()  
-        self.client_id=self.setts.get_client_secret("B2C_CLIENT_SECRET")["app_client_id"]
+        self.client_id="7ijvrk5vr44c6pvetjh0v043er"
         self.redirect_uri = self.setts.callback_url
         # Azure B2C endpoints
         self.authorization = self.setts.authorize_url
