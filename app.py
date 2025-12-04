@@ -368,7 +368,7 @@ if st.session_state.get("show_suggestions", False):
     suggestions = [
         "Was können Sie mir über das Offroad-Antiblockiersystem ABS sagen?",
         "Wie schneidet MAN im Vergleich zu Wettbewerbern in Sachen Kraftstoffeffizienz ab?",
-        "Was sind die wichtigsten Sicherheitsmerkmale des TGX-Modells?"
+        "Kann der Fahrer während der Fahrt die Klimaanlage manuell regeln?"
     ]
 
     cols = st.columns(len(suggestions))
