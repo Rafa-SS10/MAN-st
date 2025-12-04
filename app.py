@@ -200,11 +200,11 @@ st.sidebar.markdown(
 # ============================================
 # CHATBOT UI
 # ============================================
-st.markdown("<h1 class='accent center'>💬 MAN Sales Argumentation Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='accent center'Ftod>💬 MAN Sales Argumentation Chatbot</h1>", unsafe_allow_html=True)
 
-def query_api(prompt: str) -> str:
+def query_api(prompt: str, history) -> str:
     url = "https://an4zcmir30.execute-api.eu-west-1.amazonaws.com/dev/v1"
-    payload = {"prompt": prompt}
+    payload = {"prompt": prompt, "history": history}
     headers = {
         "Content-Type": "application/json",
         "authorizationToken": "testStreamlit"
@@ -381,7 +381,7 @@ if st.session_state.get("show_suggestions", False):
 
                 # Get assistant response
                 with st.spinner("Die Antwort wird generiert..."):
-                    answer = query_api(q)
+                    answer = query_api(q, st.session_state.history)
 
                 # Add assistant message
                 st.session_state.messages.append({"role": "assistant", "content": answer})
@@ -420,10 +420,12 @@ if prompt := st.chat_input("Geben Sie Ihre Nachricht hier ein."):
 
     # Get assistant response
     with st.spinner("Die Antwort wird generiert..."):
-        answer = query_api(prompt)
+        
+        answer = query_api(prompt, st.session_state.history)
 
     # Add assistant message
     st.session_state.messages.append({"role": "assistant", "content": answer})
+    # st.session_state.messages.append({"role": "assistant", "content": st.session_state.history}) #TODO
 
     # Update session state
     st.session_state.last_user_prompt = prompt
