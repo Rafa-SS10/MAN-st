@@ -366,9 +366,9 @@ if st.session_state.get("show_suggestions", False):
     st.markdown("Prompt-Vorschläge:", unsafe_allow_html=True)
 
     suggestions = [
-        "Wie funktioniert die OptiView-Umschaltung?",
+        "Kann der Fahrer während der Fahrt die Klimaanlage manuell regeln?",
         "Welche Funktionen bietet die kabelgebundene Fernbedienung im Ruhebereich?",
-        "Kann der Fahrer während der Fahrt die Klimaanlage manuell regeln?"
+        "Wie funktioniert die OptiView-Umschaltung?"
     ]
 
     cols = st.columns(len(suggestions))
