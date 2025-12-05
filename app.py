@@ -257,15 +257,9 @@ if st.session_state.awaiting_feedback:
 
     with col_left:
         st.markdown("Korrektheit:")
-        
-
-        
-
-
-
 
         correctness = st.slider(
-            label="Sind die Informationen korrekt?",  # remove duplicated label
+            label="Sind die Informationen korrekt?",
             min_value=0,
             max_value=5,
             value=st.session_state.fb_correct,
@@ -278,10 +272,9 @@ if st.session_state.awaiting_feedback:
         )
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("Vollständigkeit:")
         coverage = st.slider(
-            label="Deckt die Antwort alles ab, was gewünscht war?",  # remove duplicated label
+            label="Deckt die Antwort alles ab, was gewünscht war?",
             min_value=0,
             max_value=5,
             value=st.session_state.fb_coverage,
@@ -294,47 +287,41 @@ if st.session_state.awaiting_feedback:
         )
 
         st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("Relevanz:")
-        relevance = st.slider(
-            label="Sind die Informationen hilfreich für die Frage?",  # remove duplicated label
+        st.markdown("Ton & Stil:")
+        tone_style = st.slider(
+            label="Ist die Antwort professionell, sachlich und unterstützend?",
             min_value=0,
             max_value=5,
-            value=st.session_state.fb_relevance,
-            key="fb_relevance"
+            value=st.session_state.get("fb_tone_style", 0),
+            key="fb_tone_style"
         )
         st.markdown(
             "<div style='display:flex; justify-content:space-between; font-size:12px;'>"
-            "<span>Nicht hilfreich</span><span>Hilfreich</span></div>",
+            "<span>nicht passend</span><span>passend</span></div>",
             unsafe_allow_html=True
         )
-    with col_right:
 
+    with col_right:
         st.markdown("<div class='right-column'>", unsafe_allow_html=True)
-        
         notes_correct = st.text_area(
             "Bitte geben Sie zusätzliches Feedback ein (z.B. Was war nicht korrekt?).",
             key="fb_notes_correct",
             value=st.session_state.fb_notes_correct,
             height=70
         )
-        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
-        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
         notes_coverage = st.text_area(
             "Bitte geben Sie zusätzliches Feedback ein (z.B. Was hat gefehlt?).",
             key="fb_notes_coverage",
             value=st.session_state.fb_notes_coverage,
             height=70
         )
-
-        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
-        st.markdown("<div class='right-column'>", unsafe_allow_html=True)
-        notes_relevance = st.text_area(
-            "Bitte geben Sie zusätzliches Feedback ein (z.B. Warum war es nicht hilfreich?).",
-            key="fb_notes_relevance",
-            value=st.session_state.fb_notes_relevance,
+        notes_tone_style = st.text_area(
+            "Bitte geben Sie zusätzliches Feedback ein (z.B. Wie kann die Antwort verständlicher und lösungsorientierter gestaltet werden?)",
+            key="fb_notes_tone_style",
+            value=st.session_state.get("fb_notes_tone_style", ""),
             height=70
         )
+
     col_left1, col_right1 = st.columns([2, 1])
     with col_right1:
         st.markdown("<div class='thin-button'>", unsafe_allow_html=True)
@@ -350,8 +337,8 @@ if st.session_state.awaiting_feedback:
                 "correctness_notes": notes_correct,
                 "coverage_score": coverage,
                 "coverage_notes": notes_coverage,
-                "relevance_score": relevance,
-                "relevance_notes": notes_coverage,
+                "tone_style_score": tone_style,
+                "tone_style_notes": notes_tone_style
             }
             save_feedback(entry)
             st.success("Ihr Feedback wurde erfolgreich versendet!")
@@ -366,8 +353,8 @@ if st.session_state.get("show_suggestions", False):
     st.markdown("Prompt-Vorschläge:", unsafe_allow_html=True)
 
     suggestions = [
-        "Was können Sie mir über das Offroad-Antiblockiersystem ABS sagen?",
-        "Wie schneidet MAN im Vergleich zu Wettbewerbern in Sachen Kraftstoffeffizienz ab?",
+        "Wie funktioniert die OptiView-Umschaltung?",
+        "Welche Funktionen bietet die kabelgebundene Fernbedienung im Ruhebereich?",
         "Kann der Fahrer während der Fahrt die Klimaanlage manuell regeln?"
     ]
 

@@ -17,7 +17,16 @@ def load_feedback():
         response = s3.get_object(Bucket=BUCKET_NAME, Key=OBJECT_KEY)
         content = response["Body"].read().decode("utf-8")
         data = json.loads(content)
+
+        # ✅ Backward compatibility: convert old keys if necessary
+        for entry in data:
+            if "relevance_score" in entry and "tone_style_score" not in entry:
+                entry["tone_style_score"] = entry.pop("relevance_score")
+            if "relevance_notes" in entry and "tone_style_notes" not in entry:
+                entry["tone_style_notes"] = entry.pop("relevance_notes")
+
         return data
+
     except ClientError as e:
         if e.response["Error"]["Code"] == "NoSuchKey":
             # No feedback file yet, return empty list
