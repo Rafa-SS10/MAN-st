@@ -93,10 +93,10 @@ for key, default in {
     "last_assistant_answer": "",
     "fb_correct": 0,
     "fb_coverage": 0,    
-    "fb_relevance": 0,
+    "fb_tone_style": 0,
     "fb_notes_correct": "",
     "fb_notes_coverage": "",
-    "fb_notes_relevance": "",
+    "fb_notes_tone_style": "",
     "history": []
 }.items():
     if key not in st.session_state:
