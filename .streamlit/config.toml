@@ -1,0 +1,5 @@
+[server]
+enableXsrfProtection = false
+enableCORS = false
+cookieSameSite = "none"
+cookieSecure = false
