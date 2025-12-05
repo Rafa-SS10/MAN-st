@@ -211,12 +211,12 @@ def query_api(prompt: str, history) -> str:
     }
 
     try:
-        response = requests.post(url, json=payload, headers=headers, timeout=10)
+        response = requests.post(url, json=payload, headers=headers, timeout=60)
         response.raise_for_status()
         return response.json().get("body", "No response from API.")
     except Exception as e:
         print("API error:", e)
-        return "Error contacting API."
+        return "Es ist ein Fehler aufgetreten. Können Sie es erneut versuchen?"
 
 # Chat Container
 # st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
@@ -452,5 +452,6 @@ if prompt := st.chat_input("Geben Sie Ihre Nachricht hier ein."):
 
     # Refresh UI
     st.rerun()
+
 
 st.markdown("</div>", unsafe_allow_html=True)
