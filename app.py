@@ -1,3 +1,15 @@
+"""
+MAN Sales Argumentation Chatbot - Streamlit Application.
+
+This script initializes the frontend for the Sales Argumentation Chatbot.
+It handles:
+1. User Authentication (via Cognito/Hosted UI).
+2. Session State Management.
+3. UI Layout (Sidebar, Chat Interface, Custom CSS).
+4. API Integration (AWS API Gateway).
+5. Feedback Collection and Data Persistence (S3).
+"""
+
 import streamlit as st
 import requests
 import time
@@ -13,6 +25,9 @@ import uuid
 import os
 os.environ["STREAMLIT_SUPPRESS_DEPRECATION_WARNINGS"] = "true"
 
+# ============================================
+# CONFIGURATION & WARNING SUPPRESSION
+# ============================================
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -35,6 +50,7 @@ from auth_streamlit import Auth
 # ============================================
 # INITIALIZE AUTH HANDLER
 # ============================================
+
 auth = Auth()
 
 # ============================================
@@ -56,6 +72,9 @@ load_css("style.css")
 # ============================================
 # AUTHENTICATION STATE
 # ============================================
+
+# Initialize default authentication states if they don't exist.
+
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -63,7 +82,7 @@ if "user" not in st.session_state:
     st.session_state.user = None
 
 # ============================================
-# CAPTURE COGNITO CALLBACK (?code=)
+# AUTHENTICATION HANDLER (OAUTH CALLBACK)
 # ============================================
 query_params = st.experimental_get_query_params()
 
@@ -85,8 +104,10 @@ if "code" in query_params and not st.session_state.authenticated:
         st.error("Anmeldung fehlgeschlagen.")
 
 # ============================================
-# FEEDBACK STATE
+# FEEDBACK and CHAT STATE INITIALIZATION
 # ============================================
+
+# Initialize all necessary session state variables with defaults.
 for key, default in {
     "awaiting_feedback": False,
     "last_user_prompt": "",
@@ -123,8 +144,7 @@ if not st.session_state.authenticated:
 # SIDEBAR
 # ============================================
 
-
-# Logo-Pfad
+# Construct path for the logo image.
 img_path = os.path.join(os.path.dirname(__file__), "logo.png")
 
 # CSS für Sidebar-Layout
@@ -156,6 +176,30 @@ st.sidebar.image(img_path)
 # Benutzerinfo direkt unter dem Logo
 st.sidebar.write(f"👋 Angemeldet als {st.session_state.username}")
 
+# ============================================
+# NEW CHAT FUNCTIONALITY
+# ============================================
+st.sidebar.markdown("---") # Visual separator
+
+if st.sidebar.button("➕ Neuer Chat", type="primary", use_container_width=True):
+    # 1. Generate a new Session ID so S3 logs treat this as a new thread
+    st.session_state.session_id = str(uuid.uuid4())
+    
+    # 2. Clear Chat History
+    st.session_state.messages = []
+    st.session_state.history = [] # Clear API context
+    
+    # 3. Reset UI Flags
+    st.session_state.welcome_shown = False # Will trigger the welcome message again
+    st.session_state.show_suggestions = True # Show suggested questions again
+    st.session_state.awaiting_feedback = False # Hide any pending feedback forms
+    
+    # 4. Clear last prompt/answer buffers
+    st.session_state.last_user_prompt = ""
+    st.session_state.last_assistant_answer = ""
+    
+    # 5. Rerun the app to refresh the view
+    st.rerun()
 
 # Logout
 if st.sidebar.button("Abmelden"):
@@ -195,10 +239,8 @@ st.sidebar.markdown(
 )
 
 
-
-
 # ============================================
-# CHATBOT UI
+# API HANDLER
 # ============================================
 st.markdown("<h1 class='accent center'Ftod>💬 MAN Sales Argumentation Chatbot</h1>", unsafe_allow_html=True)
 
@@ -220,6 +262,10 @@ def query_api(prompt: str, history) -> str:
 
 # Chat Container
 # st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+
+# ============================================
+# MAIN CHAT UI
+# ============================================
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

@@ -8,6 +8,10 @@ from auth_config import AuthConfig
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class Auth:
+    """
+    Handles Azure AD B2C Authentication flows including Login, Callback handling, 
+    and Logout within a Streamlit application.
+    """
     def __init__(self):
         self.setts = AuthConfig()  
         self.client_id=self.setts.get_client_secret("B2C_CLIENT_SECRET")["client_id"]
@@ -23,8 +27,12 @@ class Auth:
             "b2c_1a_man_web_susi_dev/oauth2/v2.0/logout"
         )
 
-    # Redirect user to Azure B2C login
+
     def redirect_to_login(self):
+        """
+        Constructs the Azure B2C authorization URL and redirects the user 
+        via a HTML meta-refresh tag.
+        """
         login_url = (
             f"{self.authorization}"
             f"?response_type=code"
@@ -38,8 +46,17 @@ class Auth:
             unsafe_allow_html=True
         )
 
-    # Callback handler: exchange code for JWT tokens
     def handle_callback(self, code):
+        """
+        Exchanges the authorization code for an ID token.
+        
+        Args:
+            code (str): The authorization code received from Azure B2C.
+            
+        Returns:
+            dict: User details (email, name, sub) if successful.
+            None: If token exchange or decoding fails.
+        """
         data = {
             "grant_type": "authorization_code",
             "client_id": self.client_id,
@@ -48,7 +65,8 @@ class Auth:
         }
 
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
-
+        
+        #execute POST request to token endpoint
         resp = requests.post(self.token_url, data=data, headers=headers)
         if resp.status_code != 200:
             print("Token exchange failed:", resp.text)
