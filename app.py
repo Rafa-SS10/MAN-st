@@ -118,7 +118,8 @@ for key, default in {
     "fb_notes_correct": "",
     "fb_notes_coverage": "",
     "fb_notes_tone_style": "",
-    "history": []
+    "history": [],
+    "trigger_new_chat_toast": False
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
