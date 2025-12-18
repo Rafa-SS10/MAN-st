@@ -123,6 +123,10 @@ for key, default in {
     if key not in st.session_state:
         st.session_state[key] = default
 
+if st.session_state.get("trigger_new_chat_toast", False):
+    st.toast("Eine neue Konversation wurde erfolgreich gestartet!", icon="✅")
+    st.session_state.trigger_new_chat_toast = False
+
 # ============================================
 # LOGIN PAGE (Hosted UI Login)
 # ============================================
@@ -181,7 +185,7 @@ st.sidebar.write(f"👋 Angemeldet als {st.session_state.username}")
 # ============================================
 st.sidebar.markdown("---") # Visual separator
 
-if st.sidebar.button("➕ Neuer Chat", type="primary", use_container_width=True):
+if st.sidebar.button("➕ Neue Konversation", type="primary", use_container_width=True):
     # 1. Generate a new Session ID so S3 logs treat this as a new thread
     st.session_state.session_id = str(uuid.uuid4())
     
