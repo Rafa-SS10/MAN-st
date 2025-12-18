@@ -12,7 +12,28 @@ s3 = boto3.client("s3")
 
 
 def load_feedback():
-    """Loads feedback data from S3 bucket"""
+    """
+    Load feedback data from the S3 feedback file.
+
+    Attempts to retrieve the JSON feedback file from S3, parse it into a list
+    of entries, and perform backward-compatibility key normalization for
+    older feedback shapes.
+
+    Args:
+        None
+
+    Returns:
+        list: A list of feedback entries. Returns an empty list if the S3 key
+              does not exist yet.
+
+    Raises:
+        botocore.exceptions.ClientError: If the S3 get_object call fails for
+                                         reasons other than the key missing.
+
+    Example:
+        >>> load_feedback()
+        []
+    """
     try:
         response = s3.get_object(Bucket=BUCKET_NAME, Key=OBJECT_KEY)
         content = response["Body"].read().decode("utf-8")
@@ -36,7 +57,31 @@ def load_feedback():
 
 
 def save_feedback(entry):
-    """Appends a new feedback entry to the S3 feedback file"""
+    """
+    Append a new feedback entry to the S3 feedback file.
+
+    Loads the existing feedback list, appends the provided entry, and writes
+    the updated JSON back to the configured S3 key.
+
+    Args:
+        entry (dict): Feedback entry to append. Expected keys may include
+                      'username', 'timestamp', 'tone_style_score', and notes.
+
+    Returns:
+        None
+
+    Raises:
+        botocore.exceptions.ClientError: If the S3 put_object call fails.
+        ValueError: If the entry or resulting data cannot be serialized to JSON.
+
+    Example:
+        >>> save_feedback({
+        ...     "username": "alice",
+        ...     "timestamp": "2025-12-18T12:00:00",
+        ...     "tone_style_score": 4,
+        ...     "tone_style_notes": "Helpful response"
+        ... })
+    """
     # Load existing feedback
     data = load_feedback()
 
