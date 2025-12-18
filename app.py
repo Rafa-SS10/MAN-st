@@ -201,8 +201,7 @@ if st.sidebar.button("➕ Neue Konversation", type="primary", use_container_widt
     
     # 4. Clear last prompt/answer buffers
     st.session_state.last_user_prompt = ""
-    st.session_state.last_assistant_answer = ""
-    
+    st.session_state.last_assistant_answer = ""    
     st.session_state.trigger_new_chat_toast = True
     # 5. Rerun the app to refresh the view
     st.rerun()
