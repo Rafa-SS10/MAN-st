@@ -57,6 +57,24 @@ auth = Auth()
 # LOAD CSS
 # ============================================
 def load_css(file_name):
+    """
+    Load a CSS file and inject it into the Streamlit app.
+
+    Reads the contents of the provided CSS file and renders it inside a
+    <style> block via st.markdown so that app styling is applied.
+
+    Args:
+        file_name (str): Path to the CSS file to load.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the provided file_name cannot be opened.
+
+    Example:
+        >>> load_css("style.css")
+    """
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
@@ -250,6 +268,28 @@ st.sidebar.markdown(
 st.markdown("<h1 class='accent center'Ftod>💬 MAN Sales Argumentation Chatbot</h1>", unsafe_allow_html=True)
 
 def query_api(prompt: str, history) -> str:
+    """
+    Send the prompt and history to the backend API and return the assistant reply.
+
+    Builds a JSON payload containing the user prompt and conversation history,
+    posts it to the configured API Gateway endpoint, and returns the parsed
+    response body. On failure, returns a user-facing German error message.
+
+    Args:
+        prompt (str): The user prompt to send to the API.
+        history (list): Conversation history as a list of tuples or records.
+
+    Returns:
+        str: The assistant's reply text. If the API request fails, returns a
+             localized error string suitable for display.
+
+    Raises:
+        requests.exceptions.RequestException: If the HTTP request fails.
+
+    Example:
+        >>> query_api("Was ist MAN?", [])
+        "MAN ist ein Hersteller von Nutzfahrzeugen und ... "
+    """
     url = "https://an4zcmir30.execute-api.eu-west-1.amazonaws.com/dev/v1"
     payload = {"prompt": prompt, "history": history}
     headers = {
