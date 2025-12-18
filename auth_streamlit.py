@@ -11,8 +11,44 @@ class Auth:
     """
     Handles Azure AD B2C Authentication flows including Login, Callback handling, 
     and Logout within a Streamlit application.
+
+    Args:
+        None
+
+    Attributes:
+        setts (AuthConfig): Configuration and secrets helper.
+        client_id (str): OAuth client id retrieved from secrets manager.
+        redirect_uri (str): Redirect URI for OAuth callbacks.
+        authorization (str): Authorization endpoint URL.
+        token_url (str): Token endpoint URL.
+        logout_url (str): Logout endpoint URL.
+
+    Example:
+        >>> auth = Auth()
+        >>> isinstance(auth, Auth)
+        True
     """
     def __init__(self):
+        """
+        Initialize Auth instance with configuration and client credentials.
+
+        Reads environment and secrets via AuthConfig, sets OAuth endpoints and
+        logout URL.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            botocore.exceptions.ClientError: If retrieving client secret fails.
+
+        Example:
+            >>> auth = Auth()
+            >>> auth.client_id is not None
+            True
+        """
         self.setts = AuthConfig()  
         self.client_id=self.setts.get_client_secret("B2C_CLIENT_SECRET")["client_id"]
         self.redirect_uri = self.setts.callback_url
@@ -32,6 +68,16 @@ class Auth:
         """
         Constructs the Azure B2C authorization URL and redirects the user 
         via a HTML meta-refresh tag.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Example:
+            >>> auth = Auth()
+            >>> auth.redirect_to_login()  # triggers a redirect in Streamlit
         """
         login_url = (
             f"{self.authorization}"
@@ -48,14 +94,23 @@ class Auth:
 
     def handle_callback(self, code):
         """
-        Exchanges the authorization code for an ID token.
-        
+        Exchanges the authorization code for an ID token and decodes user info.
+
         Args:
             code (str): The authorization code received from Azure B2C.
-            
+
         Returns:
-            dict: User details (email, name, sub) if successful.
-            None: If token exchange or decoding fails.
+            dict: Parsed user information with keys 'email', 'name', 'sub' on success.
+            None: If token exchange or JWT decoding fails.
+
+        Raises:
+            requests.exceptions.RequestException: If the token endpoint request fails.
+            ValueError: If the response does not contain a valid ID token.
+
+        Example:
+            >>> auth = Auth()
+            >>> auth.handle_callback("auth_code")
+            {'email': 'user@example.com', 'name': 'User Name', 'sub': '...'}
         """
         data = {
             "grant_type": "authorization_code",
@@ -92,6 +147,22 @@ class Auth:
 
     # Logout
     def logout(self):
+        """
+        Redirects the user to the Azure B2C logout endpoint.
+
+        Constructs the logout URL with client_id and post-logout redirect and
+        triggers a meta-refresh to perform the logout.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Example:
+            >>> auth = Auth()
+            >>> auth.logout()  # performs logout redirect
+        """
         url = (
             f"{self.logout_url}"
             f"?client_id={self.client_id}"
